@@ -19,3 +19,24 @@
   left: 0;
   width: 100%;
 }
+
+.link {
+    font-weight: bold;
+    text-decoration: none;
+    color: violet;
+}
+
+.text-container {
+    width: 60%;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.header {
+    margin-top: 35px;
+    color: black;
+}
+
+p {
+  color: black;
+}

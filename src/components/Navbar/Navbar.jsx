@@ -30,7 +30,9 @@ function Navbar() {
                 <li><a href="/vote">Vote</a></li>
                 <li><a href="/listing">Food Listing</a></li>
                 <li><a href="/leaderboard">Leaderboard</a></li>
+                <li><a href="/otherstats">Other Stats</a></li>
                 <li><a href="/about">About</a></li>
+
 
                 {/* dynamic */}
                 {user ? (
