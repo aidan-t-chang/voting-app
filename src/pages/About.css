@@ -1,0 +1,15 @@
+.link {
+    font-weight: bold;
+    text-decoration: none;
+    color: violet;
+}
+
+.text-container {
+    width: 60%;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.header {
+    color: black;
+}

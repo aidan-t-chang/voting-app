@@ -25,7 +25,7 @@ ul li a:hover {
 }
 
 .navbar-logo {
-    height: 22px; /* Adjust later to be dynamic with navbar*/
+    height: 20px; /* Adjust later to be dynamic with navbar*/
     width: auto;
     vertical-align: middle;
 }
