@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Vote() {
+function Rate() {
     return (
         <>
-            <p>Vote</p>
+            <p>Rate</p>
         </>
     );
 };
 
-export default Vote;
+export default Rate;
