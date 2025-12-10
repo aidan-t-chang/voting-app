@@ -25,23 +25,23 @@ function Home() {
             </div>
             <div className="text-container">
                 <h2 className="subheader">Food Listing</h2>
-                <p>To view the food listing, navigate to the <a className="link" href="/listing">food listing page</a> after 
-                logging in. The food listing displays all food items served at IMSA (from Jan 2026 onwards) along with their 
+                <p>To view the food listing, navigate to the <a className="link" href="/listing">food listing page</a>. 
+                The food listing displays all food items served at IMSA (from Jan 2026 onwards) along with their 
                 average ratings and the comments. The foods are by default sorted by their average rating, but can be sorted by
                 a multitude of other parameters such as number of votes, least liked, and frequency of the food item.
                 </p>
             </div>
             <div className="text-container">
                 <h2 className="subheader">Leaderboard</h2>
-                <p>To view the leaderboard, navigate to the <a className="link" href="/leaderboard">leaderboard page</a> after 
-                logging in. The leaderboard scores food items based on the following formula:  (formula). This scoring system
+                <p>To view the leaderboard, navigate to the <a className="link" href="/leaderboard">leaderboard page</a>. 
+                The leaderboard scores food items based on the following formula:  (formula). This scoring system
                 (explanation of scoring system). The leaderboard can display by either the highest scored items or by the lowest scored items.
                 </p>
             </div>
             <div className="text-container">
                 <h2 className="subheader">Other Stats</h2>
-                <p>To view other statistics, navigate to the <a className="link" href="/otherstats">other stats page</a> after 
-                logging in. This page provides additional insights and statistics about users, comments, and other relevant data.
+                <p>To view other statistics, navigate to the <a className="link" href="/otherstats">other stats page</a>. 
+                This page provides additional insights and statistics about users, comments, and other relevant data.
                 </p>
             </div>
         </>
