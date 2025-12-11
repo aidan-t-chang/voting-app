@@ -3,7 +3,6 @@ import { useState } from 'react'
 import Navbar from './components/Navbar/Navbar.jsx'
 import './App.css'
 import About from './pages/About.jsx';
-import Login from './pages/Login.jsx';
 import Leaderboard from './pages/Leaderboard.jsx';
 import Listing from './pages/Listing.jsx';
 import Rate from './pages/Rate.jsx';
@@ -16,10 +15,8 @@ function App() {
   return (
     <>
     <Router>
-      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/listing" element={<Listing />} />
         <Route path="/rate" element={<Rate />} />
