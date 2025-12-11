@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar/Navbar.jsx';
+import SettingsModal from '../components/SettingsModal/SettingsModal.jsx';
 import './style/About.css';
 
 function About() {
@@ -7,6 +8,7 @@ function About() {
     return (
         <>
         <Navbar />
+        <SettingsModal />
         <div className="text-container">
             <h1 className="header">About</h1>
             <p>This site was created so that there could be community-driven statistics on the 

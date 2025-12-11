@@ -28,8 +28,7 @@ function Navbar() {
         try {
             await signInWithPopup(auth, provider);
             console.log('User signed in successfully. What\'s up ' + auth.currentUser.displayName);
-            console.log('If you see this image, come see me in person and I\'ll give you a dollar.');
-            // account creation is automatically handled by Firebase
+            console.log('If you see this message, come see me in person and I\'ll give you a dollar.');
         } catch (error) {
             console.error('Error signing in: ', error);
         }
@@ -52,7 +51,9 @@ function Navbar() {
                     <li className="dropdown" style={{float: 'right'}}>
                         <div className="navbar-user-main">Hello, {user.displayName}</div>
                         <div className="dropdown-content">
-                            <a href="#" className="navbar-user">Settings</a>
+                            <a href="#" className="navbar-user" onClick={() => {
+                                document.getElementById('settingsModal').style.display = 'block';
+                            }} >Settings</a>
                             <a href="#" className="navbar-user">Profile</a>
                             <a href="#" onClick={handleLogout}>Logout</a>
                         </div>

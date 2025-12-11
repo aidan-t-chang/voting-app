@@ -11,7 +11,7 @@ function Home() {
                 <p>Welcome to the IMSA food rating app. This platform allows you to rate your favorite food items
                     and see what IMSA students think are the best food items. This is <strong>not</strong> an official site affiliated with
                     the Illinois Math & Science Academy. In order to
-                    <a className="link" href="/rate"> rate foods</a>, you must first <a className="link" href="/login">log in</a> with a valid IMSA email address.
+                    <a className="link" href="/rate"> rate foods</a>, you must first log in with a valid IMSA email address.
                 </p>
             </div>
             <div className="text-container">
