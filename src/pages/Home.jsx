@@ -16,10 +16,10 @@ function Home() {
             </div>
             <div className="text-container">
                 <h2 className="subheader">Viewing Your Profile</h2>
-                <p>After logging in or signing up, you will have access to your <a className="link" style={{cursor: 'pointer'}} onClick={() => {
+                <p>After logging in or signing up in the top right hand corner, you will have access to your <a className="link" style={{cursor: 'pointer'}} onClick={() => {
                     document.getElementById('profileModal').style.display = 'block';
                 }}>profile page</a>.
-                By hovering in the top right hand corner over your name, a dropdown menu will appear with options to view your profile, settings, or log out.
+                By hovering in the top right hand corner where the login button used to be, a dropdown menu will appear with options to view your profile, settings, or log out.
                 By default, your real name is hidden for privacy reasons, but this can be changed in the settings.
                 </p>
             </div>

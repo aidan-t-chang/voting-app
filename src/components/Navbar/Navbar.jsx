@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from '../../../firebase';
 import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import SettingsModal from '../SettingsModal/SettingsModal.jsx';
+import { collection, addDoc } from 'firebase/firestore';
 import './Navbar.css';
 
+function addUserToFirestore() {
+
+}
 function Navbar() {
     const [user, setUser] = useState(null);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -25,6 +31,7 @@ function Navbar() {
     const handleLogin = async (e) => {
         e.preventDefault();
         const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ hd: 'imsa.edu'});
         try {
             await signInWithPopup(auth, provider);
             console.log('User signed in successfully. What\'s up ' + auth.currentUser.displayName);
@@ -33,6 +40,11 @@ function Navbar() {
             console.error('Error signing in: ', error);
         }
     };
+
+    const openSettings = (e) => {
+        e.preventDefault();
+        setIsSettingsOpen(true);
+    }
 
     return (
         <nav className="navbar">
@@ -51,9 +63,7 @@ function Navbar() {
                     <li className="dropdown" style={{float: 'right'}}>
                         <div className="navbar-user-main">Hello, {user.displayName}</div>
                         <div className="dropdown-content">
-                            <a href="#" className="navbar-user" onClick={() => {
-                                document.getElementById('settingsModal').style.display = 'block';
-                            }} >Settings</a>
+                            <a href="#" className="navbar-user" onClick={openSettings} >Settings</a>
                             <a href="#" className="navbar-user">Profile</a>
                             <a href="#" onClick={handleLogout}>Logout</a>
                         </div>
@@ -64,6 +74,7 @@ function Navbar() {
                     </li>
                 )}
             </ul>
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </nav>
     )
 }

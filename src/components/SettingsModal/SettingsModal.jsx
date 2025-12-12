@@ -2,16 +2,16 @@ import React from 'react';
 import './SettingsModal.css';
 
 function SettingsModal({ isOpen, onClose }) {
-    if (!isOpen) return null;
     return (
         <>
-            <div id="settingsModal" className="modal">
-                <div className="modal-content">
-                    <span className="close" onClick={() => {
-                        document.getElementById('settingsModal').classList.remove('open');
-                    }}>&times;</span>
-                    <h2>Settings</h2>
-                    <p>Settings content goes here.</p>
+            <div className={`modal ${isOpen ? 'open' : ''}`} onClick={onClose}>
+                <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <span className="close" onClick={onClose}>&times;</span>
+                    <h1 className="modal-header">Settings</h1>
+                    <input type="checkbox" id="showRealName" name="showRealName" />
+                    <label htmlFor="showRealName"> Show Real Name on Profile</label><br/><br/>
+                    {/* update onclick later */}
+                    <button id="saveChangesButton">Save Changes</button>
                 </div>
             </div>
         </>
