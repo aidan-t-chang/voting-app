@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from '../../../firebase';
+import { auth, db } from '../../../firebase';
 import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import SettingsModal from '../SettingsModal/SettingsModal.jsx';
 import ProfileModal from '../ProfileModal/ProfileModal.jsx';
 import { collection, addDoc } from 'firebase/firestore';
 import './Navbar.css';
 
-function addUserToFirestore() {
+async function addUserToFirestore(username, email, uid) { 
+    try {
+        const q = query(collection(db, 'users'), where('uid', '==', uid));
+        const querySnapshot = await getDocs(q);
 
+        if (!querySnapshot.empty) {
+            console.log("user already exists in database");
+            return;
+        }
+
+        const docRef = await addDoc(collection(db, 'users'), {
+            username: username,
+            email: email,
+            uid: uid,
+            realNameToggled: false,
+        });
+        console.log("Document written with ID: ", docRef.id);
+    } catch (error) {
+        console.error("Error adding document: ", error);
+    }
 }
 
 function Navbar() {
@@ -39,6 +57,12 @@ function Navbar() {
             await signInWithPopup(auth, provider);
             console.log('User signed in successfully. What\'s up ' + auth.currentUser.displayName);
             console.log('If you see this message, come see me in person and I\'ll give you a dollar.');
+            try {
+                await addUserToFirestore(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.uid);
+                console.log('User added to Firestore successfully');
+            } catch (e) {
+                console.error('Error adding user to Firestore:', e);
+            }
         } catch (error) {
             console.error('Error signing in: ', error);
         }
