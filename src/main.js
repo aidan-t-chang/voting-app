@@ -1,3 +1,5 @@
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { db, auth } from '../firebase.js';
 
 function generateRandomName() {
     const adjectives = ['Quick', 'Lazy', 'Happy', 'Sad', 'Brave', 'Clever'];
@@ -8,4 +10,20 @@ function generateRandomName() {
     return `${adj}${noun}${number}`;  
 }
 
-export { generateRandomName };
+async function queryFirestoreDB(collectionName, key, value) {
+    try {
+        const q = query(collection(db, collectionName), where(key, '==', value));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        };
+    } catch (error) {
+        console.error("error querying firestore database:", error);
+    }
+}
+
+export { generateRandomName, queryFirestoreDB };

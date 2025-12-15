@@ -3,7 +3,8 @@ import { auth, db } from '../../../firebase';
 import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import SettingsModal from '../SettingsModal/SettingsModal.jsx';
 import ProfileModal from '../ProfileModal/ProfileModal.jsx';
-import { collection, addDoc } from 'firebase/firestore';
+import { generateRandomName, queryFirestoreDB } from '../../main.js';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import './Navbar.css';
 
 async function addUserToFirestore(username, email, uid) { 
@@ -21,6 +22,7 @@ async function addUserToFirestore(username, email, uid) {
             email: email,
             uid: uid,
             realNameToggled: false,
+            hiddenName: generateRandomName(),
         });
         console.log("Document written with ID: ", docRef.id);
     } catch (error) {
@@ -59,7 +61,7 @@ function Navbar() {
             console.log('If you see this message, come see me in person and I\'ll give you a dollar.');
             try {
                 await addUserToFirestore(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.uid);
-                console.log('User added to Firestore successfully');
+                console.log('User added to Firestore/signed in successfully');
             } catch (e) {
                 console.error('Error adding user to Firestore:', e);
             }
