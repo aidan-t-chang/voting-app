@@ -7,6 +7,8 @@ import { generateRandomName, queryFirestoreDB } from '../../main.js';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import './Navbar.css';
 
+var id = "";
+
 async function addUserToFirestore(username, email, uid) { 
     try {
         const q = query(collection(db, 'users'), where('uid', '==', uid));
@@ -21,10 +23,12 @@ async function addUserToFirestore(username, email, uid) {
             username: username,
             email: email,
             uid: uid,
-            realNameToggled: false,
+            realNameToggled: true,
             hiddenName: generateRandomName(),
         });
         console.log("Document written with ID: ", docRef.id);
+        id = docRef.id;
+        console.log("User ID assigned: " + id);
     } catch (error) {
         console.error("Error adding document: ", error);
     }
@@ -67,7 +71,7 @@ function Navbar() {
             }
         } catch (error) {
             console.error('Error signing in: ', error);
-        }
+        } 
     };
 
     const openSettings = (e) => {
@@ -79,7 +83,6 @@ function Navbar() {
         e.preventDefault();
         setIsProfileOpen(true);
     }
-
     return (
         <nav className="navbar">
             <ul className="navbar-links">
@@ -91,8 +94,6 @@ function Navbar() {
                 <li><a href="/otherstats">Other Stats</a></li>
                 <li><a href="/about">About</a></li>
 
-
-                {/* if user is logged in, turn this into a dropdown with profile/settings options later */}
                 {user ? (
                     <li className="dropdown" style={{float: 'right'}}>
                         <div className="navbar-user-main">Hello, {user.displayName}</div>
@@ -109,9 +110,10 @@ function Navbar() {
                 )}
             </ul>
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-            <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)}  user={user}/>
+            {user && <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)}  userUid={user.uid}/>}
         </nav>
     )
 }
 
 export default Navbar;
+export { id };

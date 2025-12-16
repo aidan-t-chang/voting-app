@@ -26,4 +26,26 @@ async function queryFirestoreDB(collectionName, key, value) {
     }
 }
 
-export { generateRandomName, queryFirestoreDB };
+async function lookForUser(userId) {
+    try {
+        const users = await queryFirestoreDB('users', 'uid', userId);
+        if (users && users.length > 0) {
+            return users[0];
+        }
+    } catch (e) {
+        console.error("error looking for user:", e);
+    }
+}
+
+async function findSpecificValueInUserDB(uid, key) {
+    const users = await queryFirestoreDB('users', 'uid', uid);
+    if (users && users.length > 0) {
+	    const userData = users[0];
+        console.log("", key, " was found.")
+	    return userData[key];
+    } else {
+	    return false;
+    }
+}
+
+export { generateRandomName, queryFirestoreDB, lookForUser, findSpecificValueInUserDB };
