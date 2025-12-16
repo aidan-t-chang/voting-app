@@ -109,7 +109,7 @@ function Navbar() {
                     </li>
                 )}
             </ul>
-            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+            {user && <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} userUid={user.uid}/>}
             {user && <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)}  userUid={user.uid}/>}
         </nav>
     )

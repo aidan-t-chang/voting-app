@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { findSpecificValueInUserDB } from '../../main.js'
+import { findValueInUserDB } from '../../main.js'
 import './ProfileModal.css';
 
 function ProfileModal({ isOpen, onClose, userUid }) {
-    const displayName = findSpecificValueInUserDB(userUid, "realNameToggled") ? findSpecificValueInUserDB(userUid, "username") : findSpecificValueInUserDB(userUid, "hiddenName");
+    const [displayName, setDisplayName] = useState('');
+
+    useEffect(() => {
+        const fetchDisplayName = async () => {
+            if (userUid) {
+                const realNameToggled = await findValueInUserDB(userUid, 'realNameToggled');
+                const name = realNameToggled ? await findValueInUserDB(userUid, 'username') : await findValueInUserDB(userUid, "hiddenName");
+                setDisplayName(name);
+            }
+        };
+        fetchDisplayName();
+    }, [userUid]);
+
     return (
         <>
             <div className={`profilemodal ${isOpen ? 'profileopen' : ''}`} onClick={onClose}>

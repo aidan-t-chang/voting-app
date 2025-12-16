@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase.js';
 
 function generateRandomName() {
@@ -10,6 +10,7 @@ function generateRandomName() {
     return `${adj}${noun}${number}`;  
 }
 
+// queryFirestoreDB returns an array of objects with the requested key-value pairs from the firestore db
 async function queryFirestoreDB(collectionName, key, value) {
     try {
         const q = query(collection(db, collectionName), where(key, '==', value));
@@ -37,15 +38,27 @@ async function lookForUser(userId) {
     }
 }
 
-async function findSpecificValueInUserDB(uid, key) {
+async function findValueInUserDB(uid, key) {
     const users = await queryFirestoreDB('users', 'uid', uid);
     if (users && users.length > 0) {
 	    const userData = users[0];
-        console.log("", key, " was found.")
+        console.log("the following was found: ", key)
 	    return userData[key];
     } else {
 	    return false;
     }
 }
 
-export { generateRandomName, queryFirestoreDB, lookForUser, findSpecificValueInUserDB };
+async function updateDBValue(userUid, key, value) {
+    try {
+        const users = await queryFirestoreDB('users', 'uid', userUid);
+        const userRef = doc(db, 'users', users[0].id);
+        await updateDoc(userRef, {
+            [key]: value
+        })
+    } catch (e) {
+        console.error("error updating database value:", e);
+    }
+}
+
+export { generateRandomName, queryFirestoreDB, lookForUser, findValueInUserDB, updateDBValue };
