@@ -42,7 +42,7 @@ function SettingsModal({ isOpen, onClose, userUid, onSettingsSaved }) {
                     <span className="close" onClick={onClose}>&times;</span>
                     <h1 className="modal-header">Settings</h1>
                     <input type="checkbox" id="showRealName" name="showRealName" checked={showRealName} onChange={(e) => setShowRealName(e.target.checked)}/>
-                    <label htmlFor="showRealName"> Show Real Name on Profile</label><br/><br/>
+                    <label htmlFor="showRealName"> Show Real Name Publicly</label><br/><br/>
                      
                     <button id="saveChangesButton" onClick={handleChanges}>Save Changes</button>
                 </div>
