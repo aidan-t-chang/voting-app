@@ -8,12 +8,14 @@ import Listing from './pages/Listing.jsx';
 import Rate from './pages/Rate.jsx';
 import Home from './pages/Home.jsx';
 import Stats from './pages/Stats.jsx';
+import Toast, { Toaster } from 'react-hot-toast';
 
 
 function App() {
 
   return (
     <>
+    <div><Toaster position="bottom-right"/></div>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />

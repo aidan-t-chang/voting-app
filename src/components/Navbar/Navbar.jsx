@@ -5,6 +5,7 @@ import SettingsModal from '../SettingsModal/SettingsModal.jsx';
 import ProfileModal from '../ProfileModal/ProfileModal.jsx';
 import { generateRandomName } from '../../main.js';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import toast, { Toaster } from 'react-hot-toast';
 import './Navbar.css';
 
 var id = "";
@@ -64,6 +65,7 @@ function Navbar() {
             await signInWithPopup(auth, provider);
             console.log('User signed in successfully. What\'s up ' + auth.currentUser.displayName);
             console.log('If you see this message, come see me in person and I\'ll give you a dollar.');
+            toast("Welcome, " + auth.currentUser.displayName);
             try {
                 await addUserToFirestore(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.uid);
                 console.log('User added to Firestore/signed in successfully');

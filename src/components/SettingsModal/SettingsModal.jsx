@@ -1,5 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import { findValueInUserDB, updateDBValue } from '../../main.js'
+import toast, { Toaster } from 'react-hot-toast';
 import './SettingsModal.css';
 
 function SettingsModal({ isOpen, onClose, userUid, onSettingsSaved }) {
@@ -21,13 +22,19 @@ function SettingsModal({ isOpen, onClose, userUid, onSettingsSaved }) {
     }, [userUid])
 
     const handleChanges = async () => {
-        await updateDBValue(userUid, 'realNameToggled', showRealName);
-        console.log('the settings modal has updated the user db');
+        try {
+            await updateDBValue(userUid, 'realNameToggled', showRealName);
+            toast.success("Settings updated successfully");
+        } catch {
+            toast.error("Failed to update user settings");
+        }
 
         if (onSettingsSaved) {
             onSettingsSaved();
         }
+        onClose();
     }
+
     return (
         <>
             <div className={`modal ${isOpen ? 'open' : ''}`} onClick={onClose}>
