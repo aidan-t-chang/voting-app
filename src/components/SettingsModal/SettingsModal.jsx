@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { findValueInUserDB, updateDBValue } from '../../main.js'
 import './SettingsModal.css';
 
-function SettingsModal({ isOpen, onClose, userUid }) {
+function SettingsModal({ isOpen, onClose, userUid, onSettingsSaved }) {
     const [showRealName, setShowRealName] = useState(false);
 
     useEffect(() => {
@@ -21,14 +21,12 @@ function SettingsModal({ isOpen, onClose, userUid }) {
     }, [userUid])
 
     const handleChanges = async () => {
-        if (showRealName) {
-            await updateDBValue(userUid, 'realNameToggled', false);
-            setShowRealName(false);
-        } else {
-            await updateDBValue(userUid, 'realNameToggled', true);
-            setShowRealName(true);
+        await updateDBValue(userUid, 'realNameToggled', showRealName);
+        console.log('the settings modal has updated the user db');
+
+        if (onSettingsSaved) {
+            onSettingsSaved();
         }
-        console.log('changes have been saved');
     }
     return (
         <>

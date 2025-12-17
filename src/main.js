@@ -56,6 +56,7 @@ async function updateDBValue(userUid, key, value) {
         await updateDoc(userRef, {
             [key]: value
         })
+        console.log('changes have been saved');
     } catch (e) {
         console.error("error updating database value:", e);
     }

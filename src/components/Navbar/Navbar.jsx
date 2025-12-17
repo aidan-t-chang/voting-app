@@ -3,7 +3,7 @@ import { auth, db } from '../../../firebase';
 import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import SettingsModal from '../SettingsModal/SettingsModal.jsx';
 import ProfileModal from '../ProfileModal/ProfileModal.jsx';
-import { generateRandomName, queryFirestoreDB } from '../../main.js';
+import { generateRandomName } from '../../main.js';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import './Navbar.css';
 
@@ -38,6 +38,7 @@ function Navbar() {
     const [user, setUser] = useState(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [profileTrigger, setProfileTrigger] = useState(0);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -83,6 +84,11 @@ function Navbar() {
         e.preventDefault();
         setIsProfileOpen(true);
     }
+
+    const handleSettingsSaved = () => {
+        setProfileTrigger(prev => prev + 1);
+    }
+
     return (
         <nav className="navbar">
             <ul className="navbar-links">
@@ -109,8 +115,16 @@ function Navbar() {
                     </li>
                 )}
             </ul>
-            {user && <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} userUid={user.uid}/>}
-            {user && <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)}  userUid={user.uid}/>}
+            {user && <SettingsModal 
+            isOpen={isSettingsOpen} 
+            onClose={() => setIsSettingsOpen(false)} 
+            userUid={user.uid}
+            onSettingsSaved={handleSettingsSaved}/>}
+            {user && <ProfileModal 
+            isOpen={isProfileOpen} 
+            onClose={() => setIsProfileOpen(false)}  
+            userUid={user.uid}
+            updateTrigger={profileTrigger}/>}
         </nav>
     )
 }

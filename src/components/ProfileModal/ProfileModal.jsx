@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { findValueInUserDB } from '../../main.js'
 import './ProfileModal.css';
 
-function ProfileModal({ isOpen, onClose, userUid }) {
+function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
     const [displayName, setDisplayName] = useState('');
 
     useEffect(() => {
@@ -14,7 +14,7 @@ function ProfileModal({ isOpen, onClose, userUid }) {
             }
         };
         fetchDisplayName();
-    }, [userUid]);
+    }, [userUid, updateTrigger]);
 
     return (
         <>
