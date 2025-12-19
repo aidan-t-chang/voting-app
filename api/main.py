@@ -10,9 +10,40 @@ async def get_menu_html():
         
         await page.goto("https://imsa.campus-dining.com/menus/", wait_until="networkidle")
 
-        content = await page.content()
+        await page.locator(".flex-container").wait_for(timeout=5000)
+        print("yay found")
+
+        meal_periods = ["Breakfast", "Lunch", "Dinner"]
+        daily_menus = {}
+
+        for period in meal_periods:
+            
+            # open dropdown options 
+            await page.click(".k10-menu-selector__panel")
+            print("selector panel found and clicked")
+
+            # wait for options container to become visible
+            await page.wait_for_selector(".k10-menu-selector__options")
+            print("options dropdown has now become visible")
+
+            # look for specific period option
+            period_option = page.locator(f".k10-menu-selector__option >> text={period}")
+            print(f"the {period} option has been found")
+
+            if await period_option.count() > 0:
+                await period_option.click()
+                
+                await page.wait_for_load_state("networkidle")
+
+                await asyncio.sleep(0.5)
+
+                # write code for retrieving the specific things using bs4 here probs
+
+                print("success clicking the period n stuff")
+            else:
+                print(f"option {period} not found.")
+        
         await browser.close()
-        return content
 
 app = FastAPI()
 @app.get("/menu")
