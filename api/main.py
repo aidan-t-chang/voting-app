@@ -8,41 +8,72 @@ async def get_menu_html():
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         
-        await page.goto("https://imsa.campus-dining.com/menus/", wait_until="networkidle")
+        # Navigate directly to the menu application to avoid iframe issues
+        await page.goto("https://menus.campus-dining.com/eliorna/d1654", wait_until="networkidle")
 
-        await page.locator(".flex-container").wait_for(timeout=5000)
-        print("yay found")
+        # Wait for the specific menu element instead of a generic container
+        try:
+            await page.locator(".k10-menu-selector__panel").wait_for(timeout=10000)
+            print("yay found menu selector")
+        except Exception as e:
+            print(f"Could not find menu selector: {e}")
 
         meal_periods = ["Breakfast", "Lunch", "Dinner"]
         daily_menus = {}
+        visit = set()
+        previous_dom_items = set()
 
         for period in meal_periods:
             
             # open dropdown options 
             await page.click(".k10-menu-selector__panel")
-            print("selector panel found and clicked")
 
             # wait for options container to become visible
-            await page.wait_for_selector(".k10-menu-selector__options")
-            print("options dropdown has now become visible")
+            await asyncio.sleep(0.5)
 
             # look for specific period option
             period_option = page.locator(f".k10-menu-selector__option >> text={period}")
-            print(f"the {period} option has been found")
 
             if await period_option.count() > 0:
+                print(f"the {period} option has been found")
                 await period_option.click()
                 
-                await page.wait_for_load_state("networkidle")
+                await page.locator(".k10-menu-selector__panel").filter(has_text=period).wait_for()
 
-                await asyncio.sleep(0.5)
 
-                # write code for retrieving the specific things using bs4 here probs
+                elements = []
+                current_dom_items = set()
 
-                print("success clicking the period n stuff")
+                
+                # wait for dom elements to load
+                for _ in range(10):
+                    await asyncio.sleep(0.5)
+                    current_html = await page.content()
+
+                    soup = BeautifulSoup(current_html, "html.parser")
+                    elements = soup.find_all("span", class_="k10-recipe__name")
+                    current_dom_items = {item.get_text(strip=True) for item in elements}
+
+                    if current_dom_items != previous_dom_items:
+                        break
+                
+                previous_dom_items = current_dom_items
+
+                items = []
+                for item in elements:
+                    new = item.get_text(strip=True)
+                    if new not in visit:
+                       items.append(new) 
+                       visit.add(new)
+
+                daily_menus[period] = items
+
+                print(f"found {len(items)} items for {period}")
             else:
                 print(f"option {period} not found.")
         
+        for key in daily_menus:
+            print(f"for {key}: {daily_menus[key]}")
         await browser.close()
 
 app = FastAPI()
@@ -57,4 +88,3 @@ async def read_menu():
         
 
 html_result = asyncio.run(get_menu_html())
-print(html_result)
