@@ -26,7 +26,24 @@ async def get_menu_html():
             await browser.close()
             return {}
 
-        meal_periods = ["Breakfast", "Lunch", "Dinner"]
+        meal_periods = []
+        # there is no breakfast meal period on saturdays and sundays
+        # find what date it is and check if it is either saturday or sunday
+        try:
+            date_locator = page.locator(".k10-menu-date-selector__name")
+            await date_locator.wait_for(timeout=10000)
+            print("found where the date is")
+
+            date_text = await date_locator.text_content()
+            first_word = date_text.split()[0]
+            if first_word == "Saturday," or first_word == "Sunday,":
+                meal_periods = ["Lunch", "Dinner"]
+                print("weekend, so no breakfast")
+            else:
+                meal_periods = ["Breakfast", "Lunch", "Dinner"]
+        except Exception as e:
+            print("did not find the date, assuming its the weekend")
+
         daily_menus = {}
         visit = set()
         previous_dom_items = set()
@@ -48,10 +65,8 @@ async def get_menu_html():
                 
                 await page.locator(".k10-menu-selector__panel").filter(has_text=period).wait_for()
 
-
                 elements = []
                 current_dom_items = set()
-
                 
                 # wait for dom elements to load
                 for _ in range(10):
@@ -94,6 +109,7 @@ def default():
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def no_favicon():
+
     return Response(status_code=204)
 @app.get("/menu")
 async def read_menu():
