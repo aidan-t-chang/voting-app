@@ -1,8 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar/Navbar.jsx';
 import FoodDisplay from '../components/FoodDisplay/FoodDisplay.jsx'; 
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase.js';
+import './style/Home.css';
 
 function Home() {
+    const [menuData, setMenuData] = useState(null);
+    const [lastUpdated, setLastUpdated] = useState(null);
+
+    useEffect(() => {
+        const fetchMenu = async () => {
+            try {
+                const docRef = doc(db, "menu", "daily");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setMenuData(data);
+
+                    if (data.last_updated) {
+                        const date = data.last_updated.toDate();
+                        setLastUpdated(date.toLocaleString());
+                    }
+                }
+            } catch (e) {
+                console.error("error fetching menu: ", e);
+            }
+        };
+
+        fetchMenu();
+    }, []);
+
     return (
         <>
             <Navbar />
@@ -15,8 +44,15 @@ function Home() {
                 </p>
             </div>
             <div className="text-container">
-                <h1 className="header">Today's Food</h1>
-                <FoodDisplay />
+                <div className="title-and-update">
+                    <h1 className="header">Today's Food</h1>
+                    {lastUpdated && (
+                        <span className="last-updated">
+                            (Last Updated: {lastUpdated})
+                        </span>
+                    )}
+                </div>
+                <FoodDisplay menuData={menuData}/>
             </div>
 
         </>

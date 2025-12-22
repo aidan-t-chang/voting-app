@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase.js';
+import './FoodDisplayComponent.css';
 
 // display one single food section - breakfast, lunch, or dinner
 function FoodDisplayComponent({ title, items }) {
@@ -12,7 +13,7 @@ function FoodDisplayComponent({ title, items }) {
         <>
             <div className="menu-section">
                 <h3>{title}</h3>
-                <ul>
+                <ul className="menu-items">
                     {items.map((item ,index) => (
                         <li key={index}>{item}</li>
                     ))}

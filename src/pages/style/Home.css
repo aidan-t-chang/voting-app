@@ -1,0 +1,10 @@
+.title-and-update {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.last-updated {
+    color: gray;
+    font-size: 0.8rem;
+}

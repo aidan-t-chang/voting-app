@@ -1,0 +1,13 @@
+h3 {
+    color: black;
+}
+
+.menu-items {
+    padding-left: 20px;
+    background: white;
+    color: black;
+}
+
+.menu-items li {
+    margin: 7px;
+}
