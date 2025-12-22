@@ -21,7 +21,7 @@ function Home() {
 
                     if (data.last_updated) {
                         const date = data.last_updated.toDate();
-                        setLastUpdated(date.toLocaleString());
+                        setLastUpdated(date.toLocaleString() + " CST");
                     }
                 }
             } catch (e) {
