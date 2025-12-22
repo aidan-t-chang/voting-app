@@ -128,11 +128,9 @@ async def no_favicon():
 async def read_menu():
    menus = await get_menu_html()
    doc_ref = db.collection("menu").document("daily")
-   doc_ref.set(menus)
    now = datetime.now()
-   doc_ref.set({
-       "last_updated": now
-   })
+   menus["last_updated"] = now
+   doc_ref.set(menus)
    print("saved to firestore")
    return menus
         
