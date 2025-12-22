@@ -2,12 +2,17 @@ from fastapi import FastAPI
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 from fastapi.responses import Response
+import firebase_admin
+from firebase_admin import firestore
 import asyncio
 import sys
 import uvicorn
 
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
+app = firebase_admin.initialize_app()
+db = firestore.client()
 
 async def get_menu_html():
     async with async_playwright() as p:
@@ -109,13 +114,24 @@ def default():
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def no_favicon():
-
     return Response(status_code=204)
+
 @app.get("/menu")
 async def read_menu():
-   menus =  await get_menu_html()
+   menus = await get_menu_html()
+   doc_ref = db.collection("menu").document("daily")
+   doc_ref.set(menus)
+   print("saved to firestore")
    return menus
         
+@app.get("/get_menu")
+async def get_menu():
+    doc_ref = db.collection("menu").document("daily")
+    doc = doc_ref.get()
+    if doc.exists:
+        return doc.to_dict()
+    else:
+        return {}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=False)
