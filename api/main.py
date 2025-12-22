@@ -5,6 +5,7 @@ from fastapi.responses import Response
 import firebase_admin
 from firebase_admin import firestore, credentials
 import asyncio, sys, uvicorn, json, os
+from datetime import datetime
 
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
@@ -128,6 +129,10 @@ async def read_menu():
    menus = await get_menu_html()
    doc_ref = db.collection("menu").document("daily")
    doc_ref.set(menus)
+   now = datetime.now()
+   doc_ref.set({
+       "last_updated": now
+   })
    print("saved to firestore")
    return menus
         
