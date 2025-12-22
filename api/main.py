@@ -3,15 +3,22 @@ from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 from fastapi.responses import Response
 import firebase_admin
-from firebase_admin import firestore
-import asyncio
-import sys
-import uvicorn
+from firebase_admin import firestore, credentials
+import asyncio, sys, uvicorn, json, os
 
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
-app = firebase_admin.initialize_app()
+firebase_creds = os.getenv("FIREBASE_CREDENTIALS")
+
+if firebase_creds:
+    cred_dict = json.loads(firebase_creds)
+    cred = credentials.Certificate(cred_dict)
+    app = firebase_admin.initialize_app(cred)
+else:
+    print("firebase credentials not found. using defaults")
+    app = firebase_admin.intialize_app()
+
 db = firestore.client()
 
 async def get_menu_html():
