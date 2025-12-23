@@ -126,13 +126,22 @@ async def no_favicon():
 
 @app.get("/menu")
 async def read_menu():
-   menus = await get_menu_html()
-   doc_ref = db.collection("menu").document("daily")
-   now = datetime.now()
-   menus["last_updated"] = now
-   doc_ref.set(menus)
-   print("saved to firestore")
-   return menus
+    menus = await get_menu_html()
+    doc_ref = db.collection("menu").document("daily")
+    now = datetime.now()
+    menus["last_updated"] = now
+    doc_ref.set(menus)
+    print("saved to firestore")
+
+    doc_ref2 = db.collection("all-foods").document(f"{now.split()[0]}")
+    all_together = []
+    for menu in menus:
+        all_together.append(menus[menu])
+    doc_ref2.set({
+        "food": all_together
+    })
+    print("saved all foods to ")
+    return menus
         
 @app.get("/get_menu")
 async def get_menu():
