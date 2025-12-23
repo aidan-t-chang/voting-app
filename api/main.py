@@ -133,7 +133,7 @@ async def read_menu():
     doc_ref.set(menus)
     print("saved to firestore")
 
-    doc_ref2 = db.collection("all-foods").document(f"{now.split()[0]}")
+    doc_ref2 = db.collection("all-foods").document(f"{str(now).split()[0]}")
     all_together = []
     for menu in menus:
         all_together.append(menus[menu])
