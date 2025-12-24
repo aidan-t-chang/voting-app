@@ -131,20 +131,36 @@ async def read_menu():
     now = datetime.now()
     menus["last_updated"] = now
     doc_ref.set(menus)
-    print("saved to firestore")
+    print("saved to daily")
 
-    doc_ref2 = db.collection("all-foods").document(f"{str(now).split()[0]}")
-    unique_foods = set()
-    
+    today_foods = set()
     for value in menus.values():
         if isinstance(value, list):
-            unique_foods.update(value)
+            today_foods.update(value)
 
-    all_together = list(unique_foods)
+    today_foods_list = list(today_foods)
+
+    doc_ref2 = db.collection("all-foods").document(str(now).split()[0])
     doc_ref2.set({
-        "food": all_together
+        "food": today_foods_list
     })
-    print(f"saved food items to all-foods")
+
+    batch = db.batch()
+    for food_name in today_foods:
+        sanitized = food_name.relace("/", "-")
+        
+        food_ref = db.collection("foods").document(sanitized)
+
+        doc = food_ref.get()
+        if not doc.exists: # if it is a new item
+            batch.set(food_ref, {
+                "name": food_name,
+                "score": 0,
+                "num_ratings": 0,
+                "first_seen": now
+            })
+   
+    print(f"saved food items")
     return menus
         
 @app.get("/get_menu")
