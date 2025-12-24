@@ -134,13 +134,17 @@ async def read_menu():
     print("saved to firestore")
 
     doc_ref2 = db.collection("all-foods").document(f"{str(now).split()[0]}")
-    all_together = []
-    for menu in menus:
-        all_together.append(menus[menu])
+    unique_foods = set()
+    
+    for value in menus.values():
+        if isinstance(value, list):
+            unique_foods.update(value)
+
+    all_together = list(unique_foods)
     doc_ref2.set({
         "food": all_together
     })
-    print("saved all foods to ")
+    print(f"saved food items to all-foods")
     return menus
         
 @app.get("/get_menu")
