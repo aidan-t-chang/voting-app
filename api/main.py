@@ -157,7 +157,8 @@ async def read_menu():
                 "name": food_name,
                 "score": 0,
                 "num_ratings": 0,
-                "first_seen": now
+                "last_seen": now,
+                "avg_rating": 0,
             })
     batch.commit()
    
