@@ -6,15 +6,17 @@ function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
     const [displayName, setDisplayName] = useState('');
 
     useEffect(() => {
-        const fetchDisplayName = async () => {
-            if (userUid) {
-                const realNameToggled = await findValueInUserDB(userUid, 'realNameToggled');
-                const name = realNameToggled ? await findValueInUserDB(userUid, 'username') : await findValueInUserDB(userUid, "hiddenName");
-                setDisplayName(name);
-            }
-        };
-        fetchDisplayName();
-    }, [userUid, updateTrigger]);
+        if (isOpen) {
+            const fetchDisplayName = async () => {
+                if (userUid) {
+                    const realNameToggled = await findValueInUserDB(userUid, 'realNameToggled');
+                    const name = realNameToggled ? await findValueInUserDB(userUid, 'username') : await findValueInUserDB(userUid, "hiddenName");
+                    setDisplayName(name);
+                }
+            };
+            fetchDisplayName();
+        }
+    }, [userUid, updateTrigger, isOpen]);
 
     return (
         <>

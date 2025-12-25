@@ -7,19 +7,21 @@ function SettingsModal({ isOpen, onClose, userUid, onSettingsSaved }) {
     const [showRealName, setShowRealName] = useState(false);
 
     useEffect(() => {
-        const checkToDisplayRealName = async () => {
-            const RealName = await findValueInUserDB(userUid, 'realNameToggled');
-            if (RealName === false) {
-                setShowRealName(false);
-                console.log('the settings modal has found that the real name should not be shown on the profile');
+        if (isOpen) { 
+            const checkToDisplayRealName = async () => {
+                const RealName = await findValueInUserDB(userUid, 'realNameToggled');
+                if (RealName === false) {
+                    setShowRealName(false);
+                    console.log('the settings modal has found that the real name should not be shown on the profile');
+                }
+                else {
+                    setShowRealName(true);
+                    console.log('the settings modal has found that the real name should be shown on the profile');
+                }
             }
-            else {
-                setShowRealName(true);
-                console.log('the settings modal has found that the real name should be shown on the profile');
-            }
+            checkToDisplayRealName();
         }
-        checkToDisplayRealName();
-    }, [userUid])
+    }, [userUid, isOpen])
 
     const handleChanges = async () => {
         try {
