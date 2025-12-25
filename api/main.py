@@ -159,6 +159,7 @@ async def read_menu():
                 "num_ratings": 0,
                 "first_seen": now
             })
+    batch.commit()
    
     print(f"saved food items")
     return menus
