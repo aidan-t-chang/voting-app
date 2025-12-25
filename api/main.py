@@ -147,7 +147,7 @@ async def read_menu():
 
     batch = db.batch()
     for food_name in today_foods:
-        sanitized = food_name.relace("/", "-")
+        sanitized = food_name.replace("/", "-")
         
         food_ref = db.collection("foods").document(sanitized)
 
