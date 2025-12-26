@@ -157,11 +157,11 @@ async def read_menu():
                 "name": food_name,
                 "score": 0,
                 "num_ratings": 0,
-                "last_seen": now,
+                "last_seen": str(now).split()[0],
                 "avg_rating": 0,
             })
         else: # update last_seen to be today
-            batch.update(food_ref, {"last_seen": now})
+            batch.update(food_ref, {"last_seen": str(now).split()[0]})
     batch.commit()
    
     print(f"saved food items")
