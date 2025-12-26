@@ -7,7 +7,7 @@ function generateRandomName() {
     const number = Math.floor(Math.random() * 1000);
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
     const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    return `${adj}${noun}${number}`;  
+    return `${adj}${noun}${number}`;
 }
 
 // queryFirestoreDB returns an array of objects with the requested key-value pairs from the firestore db
