@@ -4,9 +4,61 @@ import SubmitButton from '../Components/SubmitButton/SubmitButton.jsx';
 import './style/Rate.css';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase.js';
+import { fetchUserRatingsOnDate } from '../main.js';
 
 function Rate() {
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [loading, setLoading] = useState(false);
+    const [menuItems, setMenuItems] = useState({});
+
+    useEffect(() => {
+        fetchMenuItems();
+    }, [selectedDate]);
+
+    const fetchMenuItems = async () => {
+        setLoading(true);
+        try {
+            const today = new Date().toISOString().split("T")[0];
+            if (selectedDate == today) {
+                const docRef = doc(db, "menu", "daily");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    // remove last_updated
+                    const { last_updated, ...menuData } = data;
+                    setMenuItems(menuData);
+                }
+            } else {
+                const docRef = doc(db, "all-foods", selectedDate.toISOString().split("T")[0]);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setMenuItems({ "All Items": data.food || [] });
+                } else {
+                    setMenuItems({});
+                }
+            }
+
+            // if the person is logged in
+            if (auth.currentUser) {
+                // problem with this implementation: it fetches for ratings on a certain date, but what if a user
+                // rated food that is present today on a different date?
+
+                // fix: have ratings stored for a food and not for a date
+                const { ratings: existingRatings, comments: existingComments } = await fetchUserRatingsOnDate(
+                    auth.currentUser.uid,
+                    selectedDate
+                );
+            }
+        } catch (e) {
+            console.error("error fetching menu: ", e);
+        } 
+        setLoading(false);
+    };     
+    
     return (
         <>
             <Navbar />

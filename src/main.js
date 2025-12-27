@@ -62,4 +62,31 @@ async function updateDBValue(userUid, key, value) {
     }
 }
 
+async function fetchUserRatingsOnDate(userId, date) {
+    try {
+        const q = query(
+            collection(db, 'ratings'),
+            where('uid', '==', userId),
+            where('date', '==', date)
+        );
+        const querySnapshot = await getDocs(q);
+
+        const ratings = {};
+        const comments = {};
+
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            ratings[data.foodItem] = data.rating;
+            if (data.comment) {
+                comments[data.foodItem] = data.comment;
+            }
+        });
+
+        return {ratings, comments};
+    } catch (e) {
+        console.error("error fetching user ratings on date:", e);
+        return {ratings: {}, comments: {}};
+    }
+}
+
 export { generateRandomName, queryFirestoreDB, lookForUser, findValueInUserDB, updateDBValue };
