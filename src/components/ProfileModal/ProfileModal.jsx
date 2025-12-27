@@ -4,15 +4,18 @@ import './ProfileModal.css';
 
 function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
     const [displayName, setDisplayName] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             const fetchDisplayName = async () => {
+                setLoading(true);
                 if (userUid) {
                     const realNameToggled = await findValueInUserDB(userUid, 'realNameToggled');
                     const name = realNameToggled ? await findValueInUserDB(userUid, 'username') : await findValueInUserDB(userUid, "hiddenName");
                     setDisplayName(name);
                 }
+                setLoading(false);
             };
             fetchDisplayName();
         }
@@ -23,7 +26,9 @@ function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
             <div className={`profilemodal ${isOpen ? 'profileopen' : ''}`} onClick={onClose}>
                 <div className="profilemodal-content" onClick={e => e.stopPropagation()}>
                     <span className="profileclose" onClick={onClose}>&times;</span>
-                    <h1 className="profilemodal-header">{displayName}'s Profile</h1>
+                    {loading ? <p>Loading...</p> : (
+                        <h1 className="profilemodal-header">{displayName}'s Profile</h1>
+                    )}
                 </div>
             </div>
         </>
