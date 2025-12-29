@@ -90,6 +90,7 @@ function Navbar() {
     const handleSettingsSaved = () => {
         setProfileTrigger(prev => prev + 1);
     }
+    // have another dropdown option to view all a user's rating history
 
     return (
         <nav className="navbar">

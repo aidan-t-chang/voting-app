@@ -4,7 +4,7 @@ import SubmitButton from '../Components/SubmitButton/SubmitButton.jsx';
 import './style/Rate.css';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase.js';
-import { fetchUserRatingsOnDate } from '../main.js';
+import { findFoodRatingsGivenUid, findFoodRatingsGivenFood } from '../main.js';
 
 function Rate() {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -44,14 +44,11 @@ function Rate() {
 
             // if the person is logged in
             if (auth.currentUser) {
-                // problem with this implementation: it fetches for ratings on a certain date, but what if a user
-                // rated food that is present today on a different date?
-
-                // fix: have ratings stored for a food and not for a date
-                const { ratings: existingRatings, comments: existingComments } = await fetchUserRatingsOnDate(
-                    auth.currentUser.uid,
-                    selectedDate
-                );
+                // a dict of ratings + comments from the user
+                // fooditem: rating
+                const user_ratings = await findFoodRatingsGivenUid(auth.currentUser.uid); 
+                // have two rating collections: one with food id as document, one with user id as document
+                // for the rating-userid collection, the key-value in the collection is food_id  then everything else
             }
         } catch (e) {
             console.error("error fetching menu: ", e);
@@ -85,6 +82,14 @@ function Rate() {
                 - an optional place to leave comments
                 - a submit button to submit the ratings and comments
              */}
+
+            {/* idea: have all items located under rate, with today's food items highlighted a certain color for each meal
+            still have the calendar, but changing the date would change which items are highlighted
+            this way the user clicks less and stats can be displayed for all food items:
+            - total ratings + average rating
+            - show comments button
+            - last seen
+            */}
         </>
     );
 };

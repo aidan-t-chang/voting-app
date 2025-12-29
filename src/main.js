@@ -62,31 +62,30 @@ async function updateDBValue(userUid, key, value) {
     }
 }
 
-async function fetchUserRatingsOnDate(userId, date) {
+async function findFoodRatingsGivenUid(userUid) {
     try {
-        const q = query(
-            collection(db, 'ratings'),
-            where('uid', '==', userId),
-            where('date', '==', date)
-        );
-        const querySnapshot = await getDocs(q);
+        const ratingsRef = doc(db, 'ratings-userid', userUid);
+        const ratingsSnap = await getDoc(ratingsRef);
 
-        const ratings = {};
-        const comments = {};
-
-        querySnapshot.forEach(doc => {
-            const data = doc.data();
-            ratings[data.foodItem] = data.rating;
-            if (data.comment) {
-                comments[data.foodItem] = data.comment;
-            }
-        });
-
-        return {ratings, comments};
+        if (ratingsSnap.exists()) {
+            return ratingsSnap.data();
+        }
+        return {};
     } catch (e) {
-        console.error("error fetching user ratings on date:", e);
-        return {ratings: {}, comments: {}};
+        console.error("error fetching food ratings given uid:", e);
     }
 }
 
-export { generateRandomName, queryFirestoreDB, lookForUser, findValueInUserDB, updateDBValue };
+async function findFoodRatingsGivenFood(foodName) {
+    try {
+        const ratingsRef = doc(db, 'ratings-foodname', foodName);
+        const ratingsSnap = await getDoc(ratingsRef);
+
+        if (ratingsSnap.exists()) {
+            return ratingsSnap.data();
+        }
+    } catch (e) {
+        console.error("error fetching food ratings given food name:", e);
+    }
+}
+export { generateRandomName, queryFirestoreDB, lookForUser, findValueInUserDB, updateDBValue, findFoodRatingsGivenUid, findFoodRatingsGivenFood };
