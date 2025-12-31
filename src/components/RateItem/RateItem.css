@@ -1,0 +1,70 @@
+.rate-item-card {
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%; 
+    box-sizing: border-box;
+}
+
+.rate-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.food-name {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.star-btn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 28px;
+    transition: transform 0.1s;
+}
+
+.star-btn:hover {
+    transform: scale(1.1);
+}
+
+.on .star {
+    color: #ffc107; 
+}
+
+.off .star {
+    color: #e4e5e9; 
+}
+
+.rated-text {
+    font-size: 0.85em;
+    color: #4caf50;
+    margin: 0;
+    font-weight: 500;
+    height: 1.2em; 
+}
+
+.rated-text.placeholder {
+    color: #999;
+    font-weight: 400;
+}

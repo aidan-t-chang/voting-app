@@ -1,24 +1,73 @@
 .voting-container {
-    width: 60%;
-    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 100px; /* Space for fixed submit button if needed, or just breathing room */
 }
 
 .date-selector {
     margin-bottom: 30px;
-    padding: 15px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 1.2rem;
 }
 
 .date-selector input {
-    padding: 8px 12px;
-    font-size: 14px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-left: 10px;
+}
+
+.meals-container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.meal-section {
+    margin-bottom: 50px;
+}
+
+.meal-header {
+    text-align: center;
+    font-size: 2rem;
+    color: #444;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.meal-items-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-items: stretch;
+}
+
+@media (max-width: 900px) {
+    .meal-items-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .meal-items-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Submit Section */
+.submit-section {
+    margin-top: 30px;
+    height: 50px; /* Reserve space */
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.submit-section.visible {
+    opacity: 1;
 }

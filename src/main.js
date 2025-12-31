@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase.js';
 
 function generateRandomName() {
@@ -88,4 +88,5 @@ async function findFoodRatingsGivenFood(foodName) {
         console.error("error fetching food ratings given food name:", e);
     }
 }
+
 export { generateRandomName, queryFirestoreDB, lookForUser, findValueInUserDB, updateDBValue, findFoodRatingsGivenUid, findFoodRatingsGivenFood };
