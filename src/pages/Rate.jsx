@@ -9,7 +9,7 @@ import RateItem from '../components/RateItem/RateItem.jsx';
 import toast, { Toaster } from 'react-hot-toast';
 
 function Rate() {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
     const [loading, setLoading] = useState(false);
     const [menuItems, setMenuItems] = useState({});
     const [userRatings, setUserRatings] = useState({});

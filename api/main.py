@@ -141,9 +141,9 @@ async def read_menu():
     today_foods_list = list(today_foods)
 
     doc_ref2 = db.collection("all-foods").document(str(now).split()[0])
-    doc_ref2.set({
-        "food": today_foods_list
-    })
+    all_foods_data = menus.copy()
+    doc_ref2.set(all_foods_data)
+
 
     batch = db.batch()
     for food_name in today_foods:
