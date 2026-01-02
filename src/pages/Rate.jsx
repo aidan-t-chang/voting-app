@@ -45,11 +45,15 @@ function Rate() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.food && Array.isArray(data.food)) {
+                    const hasMealSections = ['Breakfast', 'Lunch', 'Dinner'].some(meal => data[meal] && Array.isArray(data[meal]));
+
+                    if (hasMealSections) {
+                        currentMenu = data;
+                    } else if (data.food && Array.isArray(data.food)) {
                         currentMenu = { "All Items": data.food };
                     } else {
                         currentMenu = data;
-                    }
+                    } 
                     setMenuItems(currentMenu);
                 } else {
                     setMenuItems({});
@@ -94,9 +98,17 @@ function Rate() {
             toast.error("You must be logged in to rate food items.");
             return;
         }
-        setPendingRatings(prev => ({
-            ...prev, [foodId]: rating
-        }));
+        const originalRating = userRatings[foodId] || 0;
+
+        if (rating === originalRating) {
+            setPendingRatings(prev => {
+                const newPending = {...prev};
+                delete newPending[foodId];
+                return newPending;
+            });
+        } else {
+            setPendingRatings(prev => ({...prev, [foodId]: rating}));
+        }
     };
 
     const submitRatings = async () => {
@@ -202,7 +214,7 @@ function Rate() {
             ) : (
                 <div className="meals-container">
                     {getMealsToDisplay().map(meal => renderMealSection(meal))}
-                    {Object.keys(menuItems).length > 0 && <p>No menu items found for this date.</p>}
+                    {Object.keys(menuItems).length === 0 && <p>No menu items found for this date.</p>}
                 </div>
             )}
 
@@ -215,22 +227,6 @@ function Rate() {
                     }></SubmitButton>
                 )}
             </div>
-
-            {/* required things for the food rating:
-                - calendar dropdown to select date (default should be today)
-                - list of food items for that certain day
-                - an option to select a rating for each food item (1-5 stars)
-                - an optional place to leave comments
-                - a submit button to submit the ratings and comments
-             */}
-
-            {/* idea: have all items located under rate, with today's food items highlighted a certain color for each meal
-            still have the calendar, but changing the date would change which items are highlighted
-            this way the user clicks less and stats can be displayed for all food items:
-            - total ratings + average rating
-            - show comments button
-            - last seen
-            */}
         </>
     );
 };

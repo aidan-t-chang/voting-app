@@ -21,7 +21,7 @@ function RateItem({ foodId, foodName, currentRating, onRate }) {
                             type="button"
                             key={index}
                             className={ratingValue <= (hover || rating) ? "star-button on" : "star-button off"}
-                            onClick={() => onRate(foodId, ratingValue)}
+                            onClick={() => onRate(foodId, ratingValue === rating ? 0 : ratingValue)}
                             onMouseEnter={() => setHover(ratingValue)}
                             onMouseLeave={() => setHover(rating)}
                             >
