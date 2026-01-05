@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import './RateItem.css';
 
-function RateItem({ foodId, foodName, currentRating, onRate }) {
+function RateItem({ foodId, foodName, currentRating, currentComment, onRate, onComment }) {
     const [rating, setRating] = useState(currentRating || 0);
     const [hover, setHover] = useState(0);
+    const [comment, setComment] = useState(currentComment || "");
 
     useEffect(() => {
         setRating(currentRating || 0);
     }, [currentRating]);
+
+    useEffect(() => {
+        setComment(currentComment || "");
+    }, [currentComment]);
+
+    const handleCommentChange = (e) => {
+        const newComment = e.target.value;
+        setComment(newComment);
+        if (onComment) {
+            onComment(foodId, newComment);
+        }
+    };
 
     return (
         <>
@@ -35,6 +48,14 @@ function RateItem({ foodId, foodName, currentRating, onRate }) {
                 ) : (
                     <p className="rated-text placeholder">Rate this item</p>
                 )}
+
+                <textarea 
+                    className="comment-input"
+                    placeholder={ rating > 0 ? "Leave a comment (optional)" : "Rate item to leave a comment" }
+                    value={comment}
+                    onChange={handleCommentChange}
+                    disabled = {rating === 0}
+                />
             </div>
         </>
     )

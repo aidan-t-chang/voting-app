@@ -68,3 +68,22 @@
     color: #999;
     font-weight: 400;
 }
+
+.comment-input {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    min-height: 60px;
+    box-sizing: border-box;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}

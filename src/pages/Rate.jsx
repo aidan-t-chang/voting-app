@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Navbar from '../components/Navbar/Navbar.jsx';
 import SubmitButton from '../Components/SubmitButton/SubmitButton.jsx';
 import './style/Rate.css';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteField, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../../firebase.js';
 import { findFoodRatingsGivenUid, findFoodRatingsGivenFood } from '../main.js';
 import RateItem from '../components/RateItem/RateItem.jsx';
@@ -98,21 +98,61 @@ function Rate() {
             toast.error("You must be logged in to rate food items.");
             return;
         }
-        const originalRating = userRatings[foodId] || 0;
 
-        if (rating === originalRating) {
+        const originalEntry = userRatings[foodId] || { rating: 0, comment: "" };
+        const curPending = pendingRatings[foodId] || originalEntry;
+
+        const newEntry = {
+            ...curPending, // merge existing comment if there is one
+            rating: rating,
+            time_submitted: serverTimestamp()
+        }
+
+        const isRatingSame = newEntry.rating === (originalEntry.rating);
+
+        // if there is a rating that is 0, remove from pendingRatings
+        if (isRatingSame) {
             setPendingRatings(prev => {
-                const newPending = {...prev};
-                delete newPending[foodId];
-                return newPending;
+                const newState = { ...prev };
+                delete newState[foodId];
+                return newState;
             });
         } else {
-            setPendingRatings(prev => ({...prev, [foodId]: rating}));
+            setPendingRatings(prev => ({ ...prev, [foodId]: newEntry }));
         }
     };
 
+    const handleComment = (foodId, comment) => {
+        if (!auth.currentUser) {
+            return;
+        }
+
+        const originalEntry = userRatings[foodId] || { rating: 0, comment: "" };
+        const curPending = pendingRatings[foodId] || originalEntry;
+
+        const newEntry = {
+            ...curPending, // merge existing comment if there is one
+            comment: comment,
+            time_submitted: serverTimestamp()
+        }
+
+        const isRatingSame = newEntry.rating === (originalEntry.rating);
+
+        // if there is a rating that is 0, remove from pendingRatings
+        if (isRatingSame) {
+            setPendingRatings(prev => {
+                const newState = { ...prev };
+                delete newState[foodId];
+                return newState;
+            })
+        } else {
+            setPendingRatings(prev => ({ ...prev, [foodId]: newEntry }));
+        }
+    }
+
+
     const submitRatings = async () => {
-        console.log("Submitting ratings.")
+        console.log("Submitting ratings")
         if (Object.keys(pendingRatings).length === 0) {
             return;
         }
@@ -121,7 +161,27 @@ function Rate() {
         try {
             const userRatingsRef = doc(db, 'ratings-userid', auth.currentUser.uid);
 
-            await setDoc(userRatingsRef, pendingRatings, { merge: true });
+            // check for 0 ratings (cleared ratings) before submitting to db
+            const userUpdates = {};
+            Object.entries(pendingRatings).forEach(([key, val]) => {
+                if (val.rating > 0) {
+                    userUpdates[key] = val;
+                } else {
+                    userUpdates[key] = deleteField();
+                }
+            });
+
+            await setDoc(userRatingsRef, userUpdates, { merge: true });
+
+            const batchPromises = Object.entries(pendingRatings).map( async ([foodId, ratingData]) => {
+                const newFoodId = foodId.replace(/\//g, '-');
+                const foodRatingsRef = doc(db, 'ratings-foodname', newFoodId);
+
+                await setDoc(foodRatingsRef, { [auth.currentUser.uid]: ratingData }, { merge: true });
+            });
+
+            await Promise.all(batchPromises);
+
             setUserRatings(prev => ({
                 ...prev, ...pendingRatings 
             }));
@@ -154,8 +214,11 @@ function Rate() {
                         const details = foodDetails[foodId];
                         if (!details) return null;
 
-                        const displayRating = pendingRatings[foodId] !== undefined ?
+                        const entry = pendingRatings[foodId] !== undefined ? 
                             pendingRatings[foodId] : userRatings[foodId];
+
+                        const displayRating = entry?.rating || 0;
+                        const displayComment = entry?.comment || "";
 
                             return (
                                 <RateItem
@@ -163,7 +226,9 @@ function Rate() {
                                     foodId={foodId}
                                     foodName={details.name}
                                     currentRating={displayRating}
+                                    currentComment={displayComment}
                                     onRate={handleRate}
+                                    onComment={handleComment}
                                 />
                             );
                     })}
@@ -215,18 +280,19 @@ function Rate() {
                 <div className="meals-container">
                     {getMealsToDisplay().map(meal => renderMealSection(meal))}
                     {Object.keys(menuItems).length === 0 && <p>No menu items found for this date.</p>}
+                    <div className={`submit-section ${hasChanges ? 'visible' : ''}`}>
+                        {hasChanges && (
+                            <SubmitButton
+                            onClick={submitRatings}
+                            text={loading ? "Saving..." : 
+                                (Object.keys(pendingRatings).length === 1 ? "Save 1 Rating" : `Save ${Object.keys(pendingRatings).length} Ratings`)
+                            }></SubmitButton>
+                        )}
+                    </div>
                 </div>
             )}
 
-            <div className={`submit-section ${hasChanges ? 'visible' : ''}`}>
-                {hasChanges && (
-                    <SubmitButton
-                    onClick={submitRatings}
-                    text={loading ? "Saving..." : 
-                        (Object.keys(pendingRatings).length === 1 ? "Save 1 Rating" : `Save ${Object.keys(pendingRatings).length} Ratings`)
-                    }></SubmitButton>
-                )}
-            </div>
+
         </>
     );
 };
