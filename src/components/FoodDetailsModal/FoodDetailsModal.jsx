@@ -51,7 +51,7 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <button className="close-button" onClick={onClose}>&times;</button>
-                <h2>{foodName}</h2>
+                <h2 className="header" style={{marginTop: 25}}>{foodName}</h2>
                 <div className="comments-section">
                     <h3>Recent Comments</h3>
                     {loading ? (
