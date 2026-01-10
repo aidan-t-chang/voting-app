@@ -245,7 +245,7 @@ async def update_ratings():
         for i, item in enumerate(items):
             item[rank_key] = i + 1
     
-    assign_ranks(all_foods, 'avg_rating', 'avg_rating_ranks', reverse=True)
+    assign_ranks(all_foods, 'avg_rating', 'avg_rating_rank', reverse=True)
     assign_ranks(all_foods, 'num_ratings', 'num_ratings_rank', reverse=True)
     assign_ranks(all_foods, 'num_comments', 'num_comments_rank', reverse=True)
     assign_ranks(all_foods, 'avg_rating', 'lowest_avg_rating_rank', reverse=False)
