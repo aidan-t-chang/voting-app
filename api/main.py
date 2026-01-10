@@ -178,7 +178,7 @@ async def get_menu():
     else:
         return {}
 
-@app.get("/update_ratings")
+@app.get("/update-ratings")
 async def update_ratings():
     # this job will run at the end of the day
     # steps:
