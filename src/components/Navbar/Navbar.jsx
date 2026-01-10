@@ -4,7 +4,7 @@ import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from
 import SettingsModal from '../SettingsModal/SettingsModal.jsx';
 import ProfileModal from '../ProfileModal/ProfileModal.jsx';
 import { generateRandomName } from '../../main.js';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 import toast, { Toaster } from 'react-hot-toast';
 import './Navbar.css';
 
@@ -12,23 +12,25 @@ var id = "";
 
 async function addUserToFirestore(username, email, uid) { 
     try {
-        const q = query(collection(db, 'users'), where('uid', '==', uid));
-        const querySnapshot = await getDocs(q);
+        const userDocRef = doc(db, 'users', uid);
+        const userDocSnap = await getDoc(userDocRef);
 
-        if (!querySnapshot.empty) {
+        if (userDocSnap.exists()) {
             console.log("user already exists in database");
+            id = uid;
             return;
         }
 
-        const docRef = await addDoc(collection(db, 'users'), {
+        await setDoc(userDocRef, {
             username: username,
             email: email,
             uid: uid,
             realNameToggled: true,
             hiddenName: generateRandomName(),
+            numComments: 0,
         });
-        console.log("Document written with ID: ", docRef.id);
-        id = docRef.id;
+        console.log("Document written with ID: ", uid);
+        id = uid;
         console.log("User ID assigned: " + id);
     } catch (error) {
         console.error("Error adding document: ", error);
