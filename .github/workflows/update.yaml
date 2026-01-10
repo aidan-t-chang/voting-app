@@ -1,0 +1,14 @@
+name: Update Ratings
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # 10 PM CST
+  workflow_dispatch:
+
+
+jobs:
+  trigger-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update the Ratings Please
+        run: curl --fail -X GET https://voting-app-api-j9fn.onrender.com/update-ratings

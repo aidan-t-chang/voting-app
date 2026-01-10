@@ -124,6 +124,7 @@ function Leaderboard() {
                                 averageRating={item.avg_rating}
                                 numRatings={item.num_ratings}
                                 onClick={()=>setSelectedFood(item)}
+                                previousRank={5} // placeholder
                             />
                         ))}
                     </div>

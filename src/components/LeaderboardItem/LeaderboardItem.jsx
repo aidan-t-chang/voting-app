@@ -44,7 +44,7 @@ function LeaderboardItem({ rank, name, averageRating, numRatings, onClick, previ
                 <h3 className="lb-name">{name}</h3>
                 <div className="lb-stats">
                     <span className="lb-rating">
-                        ⭐ {averageRating ? averageRating.toFixed(2) : "N/A"}
+                        ⭐ {averageRating ? averageRating.toFixed(1) : "N/A"}
                     </span>
                     <span className="lb-count">
                         ({numRatings || 0} rating{numRatings === 1 ? '' : 's'})

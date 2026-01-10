@@ -2,7 +2,7 @@ name: Menu Scraper
 
 on:
   schedule:
-    - cron: '0 7 * * *' # 7 AM CST
+    - cron: '0 7 * * *' # 1 AM CST
   workflow_dispatch:
 
 

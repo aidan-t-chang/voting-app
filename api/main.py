@@ -6,6 +6,7 @@ import firebase_admin
 from firebase_admin import firestore, credentials
 import asyncio, sys, uvicorn, json, os
 from datetime import datetime
+from collections import defaultdict
 
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
@@ -176,6 +177,126 @@ async def get_menu():
         return doc.to_dict()
     else:
         return {}
+
+@app.get("/update_ratings")
+async def update_ratings():
+    # this job will run at the end of the day
+    # steps:
+    # 1. go through <ratings-foodname> and get an average rating + the number of ratings for and find # comments for each item
+    # 2. update <foods> with above values 
+    # 3. calculate ranking of the food item based on avg_rating_rank, num_ratings_rank, num_comments_rank, and lowest_avg_rating_rank
+    # 4. move current rankings from step 4 into prev_ar, prev_nr, prev_nc, and prev_lar
+    # 5. add calculations to the fields of the same name 
+    # 6. go through ratings-userid and get # comments, and then update the numComments field with number of comments for a user
+    foods_ref = db.collection("foods")
+    ratings_foodname_ref = db.collection("ratings-foodname")
+
+    # step 1 
+    for doc in ratings_foodname_ref.stream():
+        food_doc_id = doc.id
+        data = doc.to_dict()
+
+        print(f"processing {food_doc_id}")
+
+        rating_number_count = 0
+        ratings_sum = 0
+        comments_count = 0
+
+        for user_id, rating_info in data.items():
+            rating_val = rating_info.get("rating", 0)
+            comment = rating_info.get("comment", "")
+
+            rating_number_count += 1
+            ratings_sum += rating_val
+            comments_count += 1 if comment != "" else 0
+        
+        avg_rating = ratings_sum / rating_number_count if rating_number_count else 0
+
+        # step 2
+        foods_ref.document(food_doc_id).update({
+            "avg_rating": avg_rating,
+            "num_ratings": rating_number_count,
+            "num_comments": comments_count
+        })
+
+    # ranking calculations
+    
+    all_foods = []
+    for doc in foods_ref.stream():
+        data = doc.to_dict()
+        data['id'] = data.id
+
+        # step 4
+        data['prev_ar'] = data.get('avg_rating_rank')
+        data['prev_nr'] = data.get('num_ratings_rank')
+        data['prev_nc'] = data.get("num_comments_rank")
+        data['prev_lar'] = data.get('lowest_avg_rating_rank')
+
+        if 'avg_rating' not in data: data['avg_rating'] = 0
+        if 'num_ratings' not in data: data['num-ratings'] = 0
+        if 'num_comments' not in data: data['num_comments'] = 0
+
+        all_foods.append(data)
+    
+    # step 3
+    def assign_ranks(items, sort_key, rank_key, reverse=True):
+        items.sort(key=lambda x: x.get(sort_key, 0) or 0, reverse=reverse)
+
+        for i, item in enumerate(items):
+            item[rank_key] = i + 1
+    
+    assign_ranks(all_foods, 'avg_rating', 'avg_rating_ranks', reverse=True)
+    assign_ranks(all_foods, 'num_ratings', 'num_ratings_rank', reverse=True)
+    assign_ranks(all_foods, 'num_comments', 'num_comments_rank', reverse=True)
+    assign_ranks(all_foods, 'avg_rating', 'lowest_avg_rating_rank', reverse=False)
+
+    # step 5
+    batch = db.batch()
+    batch_count = 0
+    batch_limit = 400
+    
+    for food in all_foods:
+        doc_ref = foods_ref.document(food['id'])
+
+        update_data = {
+           "avg_rating_rank": food['avg_rating_rank'],
+           "num_ratings_rank": food['num_ratings_rank'],
+           "num_comments_rank": food['num_comments_rank'],
+           "lowest_avg_rating_rank": food['lowest_avg_rating_rank'],
+           "prev_ar": food['prev_ar'],
+           "prev_nr": food['prev_nr'],
+           "prev_nc": food['prev_nc'],
+           "prev_lar": food['prev_lar']
+        }
+
+        batch.update(doc_ref, update_data)
+        batch_count += 1
+
+        if batch_count >= batch_limit:
+            batch.commit()
+            batch = db.batch()
+            batch_count = 0
+            print("committed batch")
+    
+    if batch_count > 0:
+        batch.commit()
+    
+    # step 6 - get and update number comments for each user
+    ratings_userid_ref = db.collection("ratings-userid")
+    users_ref = db.collection("users")
+
+    for user_id in ratings_userid_ref.stream():
+        ratings = user_id.to_dict()
+        current_uid = user_id.id
+
+
+        user_comments_count = 0
+        for i in range(len(ratings)):
+            user_comments_count += 1 if comment != "" else 0
+    users_ref.document(current_uid).update({
+        "numComments": user_comments_count
+    })
+        
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=False)
