@@ -224,7 +224,7 @@ async def update_ratings():
     all_foods = []
     for doc in foods_ref.stream():
         data = doc.to_dict()
-        data['id'] = data.id
+        data['id'] = doc.id
 
         # step 4
         data['prev_ar'] = data.get('avg_rating_rank')
