@@ -4,7 +4,7 @@ import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from
 import SettingsModal from '../SettingsModal/SettingsModal.jsx';
 import ProfileModal from '../ProfileModal/ProfileModal.jsx';
 import { generateRandomName } from '../../main.js';
-import { collection, addDoc, query, where, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import toast, { Toaster } from 'react-hot-toast';
 import './Navbar.css';
 
@@ -28,6 +28,7 @@ async function addUserToFirestore(username, email, uid) {
             realNameToggled: true,
             hiddenName: generateRandomName(),
             numComments: 0,
+            timeJoined: serverTimestamp(),
         });
         console.log("Document written with ID: ", uid);
         id = uid;
