@@ -26,7 +26,7 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
                                         author: user.realNameToggled ? user.username : user.hiddenName,
                                         rating: data.rating,
                                         text: data.comment,
-                                        timestamp: data.timestamp,
+                                        timestamp: data.timestamp ? data.timestamp.seconds * 1000 : Date.now(),
                                     };
                                 }
                             }
@@ -34,7 +34,7 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
                         })
                     );
                     
-                    setComments(comments.filter(c => c !== null).sort((a, b) => b.timestamp - a.timestamp));
+                    setComments(comments.filter(c => c !== null).sort((a, b) => a.timestamp - b.timestamp));
                 }
             } catch (e) {
                 console.error("error fetching comments:", e);
@@ -61,10 +61,16 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
                             {comments.map((comment, index) => (
                                 <li key={index} className="comment-item">
                                     <div className="comment-header">
-                                        <span className="comment-author">{comment.author}</span>
+                                        <div className="comment-user-info">
+                                            <span className="comment-author">{comment.author}</span>
+                                            <span className="comment-date">
+                                                {new Date(comment.timestamp).toLocaleDateString()}
+                                            </span>
+                                        </div>
                                         <span className="comment-rating">
                                             {'⭐'.repeat(comment.rating)}
                                         </span>
+
                                     </div>
                                     <p className="comment-text">{comment.text}</p>
                                 </li>

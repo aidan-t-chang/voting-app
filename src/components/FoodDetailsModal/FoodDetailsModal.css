@@ -37,11 +37,20 @@
 .comments-list {
     list-style: none;
     padding: 0;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid black;
+    max-height: 130px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .comment-item {
     border-bottom: 1px solid #eee;
-    padding: 15px 0;
+    padding: 15px 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .comment-item:last-child {
@@ -51,8 +60,20 @@
 .comment-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 8px;
     font-size: 0.9em;
+}
+
+.comment-user-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.comment-date {
+    color: #888;
+    font-size: 0.8em;
 }
 
 .comment-author {

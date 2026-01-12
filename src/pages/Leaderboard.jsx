@@ -4,6 +4,7 @@ import LeaderboardItem from '../components/LeaderboardItem/LeaderboardItem.jsx';
 import FoodDetailsModal from '../components/FoodDetailsModal/FoodDetailsModal.jsx';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase.js';
+import toast, { Toaster } from 'react-hot-toast';
 import './style/Leaderboard.css';
 
 
@@ -24,6 +25,13 @@ function Leaderboard() {
     const CACHE_KEY = 'leaderboard_data';
 
     useEffect(() => {
+
+        toast("Tap on a leaderboard item to view comments", {
+            icon: 'ℹ️',
+            position: 'top-center',
+            duration: 3000,
+            id: 'leaderboard-info-toast',
+        })
         const loadData = async () => {
             setLoading(true);
 
@@ -79,7 +87,7 @@ function Leaderboard() {
     };
 
     const getSortedData = () => {
-        const data = [...leaderboardData];
+        let data = leaderboardData.filter(item => (item.num_ratings || 0) > 0);
         switch (filter) {
             case 'highest-rated':
                 return data.sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0));
@@ -96,6 +104,7 @@ function Leaderboard() {
 
     return (
         <>
+            {/* <Toaster /> */}
             <Navbar />
             <div className="header-section">
                 <h1 className="header">Leaderboard</h1>
