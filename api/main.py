@@ -297,12 +297,25 @@ async def update_ratings():
         ratings = user_id.to_dict()
         current_uid = user_id.id
 
-
         user_comments_count = 0
-        for i in range(len(ratings)):
-            user_comments_count += 1 if comment != "" else 0
+        user_ratings_count = 0
+        user_ratings_sum = 0
+        
+        for food_id, rating_data in ratings.items():
+            if isinstance(rating_data, dict):
+                comment = rating_data.get("comment", "")
+                rating = rating_data.get("rating", 0)
+                
+                if comment and comment.strip():
+                    user_comments_count += 1
+                if rating > 0:
+                    user_ratings_count += 1
+                    user_ratings_sum += rating
+        
+        avg_rating_given = user_ratings_sum / user_ratings_count if user_ratings_count > 0 else 0
     users_ref.document(current_uid).update({
-        "numComments": user_comments_count
+        "numComments": user_comments_count,
+        "avgRatingGiven": avg_rating_given,
     })
         
 

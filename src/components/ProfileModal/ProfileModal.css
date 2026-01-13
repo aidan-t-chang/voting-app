@@ -43,6 +43,40 @@
     color: black;
 }
 
+.profilemodal-subtitle {
+    font-size: 0.8em;
+    color: #665;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.stat-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-column h3 {
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #333;
+}
+
+.stat-column p {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: black;
+    margin: 0;
+}
+
 label {
     color: black;
 }
