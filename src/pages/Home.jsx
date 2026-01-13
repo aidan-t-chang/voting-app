@@ -41,6 +41,7 @@ function Home() {
                     and see what IMSA students think are the best food items. This is <strong>not</strong> an official site affiliated with
                     the Illinois Math & Science Academy. In order to
                     <a className="link" href="/rate"> rate foods</a>, you must first log in with a valid IMSA email address.
+                    <br /><br /><strong>The <a className="link" href="/leaderboard">leaderboard</a> is updated every day at 10 PM CST.</strong>
                 </p>
             </div>
             <div className="text-container">

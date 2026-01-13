@@ -102,7 +102,6 @@ function Navbar() {
                 <li><a href="/">Home</a></li>
                 <li><a href="/rate">Rate</a></li>
                 <li><a href="/leaderboard">Leaderboard</a></li>
-                <li><a href="/otherstats">Other Stats</a></li>
                 <li><a href="/about">About</a></li>
 
                 {user ? (

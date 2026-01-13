@@ -20,6 +20,7 @@ function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState([]);
     const [filter, setFilter] = useState('highest-rated');
     const [selectedFood, setSelectedFood] = useState(null);
+    const [previousRank, setPreviousRank] = useState(null);
 
     const CACHE_DURATION = 60 * 60 * 1000; // 1 hr
     const CACHE_KEY = 'leaderboard_data';
@@ -94,7 +95,11 @@ function Leaderboard() {
             case 'lowest-rated':
                 return data.sort((a, b) => (a.avg_rating || 0) - (b.avg_rating || 0));
             case 'most-rated': 
-                return data.sort((a, b) => (b.num_ratings || 0) - (a.num_ratings || 0)); 
+                return data.sort((a, b) => {
+                    const scoreA = (a.num_ratings || 0) * (a.avg_rating || 0);
+                    const scoreB = (b.num_ratings || 0) * (b.avg_rating || 0);
+                    return scoreB - scoreA;
+                }); 
             default:
                 return data;
         }
@@ -133,7 +138,11 @@ function Leaderboard() {
                                 averageRating={item.avg_rating}
                                 numRatings={item.num_ratings}
                                 onClick={()=>setSelectedFood(item)}
-                                previousRank={5} // placeholder
+                                previousAR={item.prev_ar}
+                                previousLAR={item.prev_lar}
+                                previousNC={item.prev_nc}
+                                previousNR={item.prev_nr}
+                                filter={filter}
                             />
                         ))}
                     </div>

@@ -26,7 +26,7 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
                                         author: user.realNameToggled ? user.username : user.hiddenName,
                                         rating: data.rating,
                                         text: data.comment,
-                                        timestamp: data.timestamp ? data.timestamp.seconds * 1000 : Date.now(),
+                                        timestamp: data.time_submitted ? data.time_submitted.seconds * 1000 : Date.now(),
                                     };
                                 }
                             }
@@ -34,7 +34,7 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
                         })
                     );
                     
-                    setComments(comments.filter(c => c !== null).sort((a, b) => a.timestamp - b.timestamp));
+                    setComments(comments.filter(c => c !== null).sort((a, b) => b.timestamp - a.timestamp));
                 }
             } catch (e) {
                 console.error("error fetching comments:", e);
@@ -64,7 +64,11 @@ function FoodDetailsModal({ foodId, foodName, onClose }) {
                                         <div className="comment-user-info">
                                             <span className="comment-author">{comment.author}</span>
                                             <span className="comment-date">
-                                                {new Date(comment.timestamp).toLocaleDateString()}
+                                                {new Date(comment.timestamp).toLocaleDateString("en-US", {
+                                                    year: "numeric",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                })}
                                             </span>
                                         </div>
                                         <span className="comment-rating">

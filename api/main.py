@@ -240,9 +240,17 @@ async def update_ratings():
     
     # step 3
     def assign_ranks(items, sort_key, rank_key, reverse=True):
-        items.sort(key=lambda x: x.get(sort_key, 0) or 0, reverse=reverse)
+        has_rankings = []
+        for item in items:
+            val = item.get(sort_key)
+            if val is not None and val > 0:
+                has_rankings.append(item)
+            else:
+                item[rank_key] = None
 
-        for i, item in enumerate(items):
+        has_rankings.sort(key=lambda x: x.get(sort_key, 0) or 0, reverse=reverse)
+
+        for i, item in enumerate(has_rankings):
             item[rank_key] = i + 1
     
     assign_ranks(all_foods, 'avg_rating', 'avg_rating_rank', reverse=True)

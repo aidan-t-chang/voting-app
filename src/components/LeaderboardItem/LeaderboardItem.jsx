@@ -1,9 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import './LeaderboardItem.css';
 
-// do need to update foods collection items to store a yesterday's rankings field
+function LeaderboardItem({ rank, name, averageRating, numRatings, onClick, previousAR, previousLAR, previousNR, filter }) {
+    // previous average rating, previous lowest average rating, previous number comments, previous number ratings RANKING
 
-function LeaderboardItem({ rank, name, averageRating, numRatings, onClick, previousRank }) {
+    let previousRank;
+    switch (filter) {
+        case 'highest-rated':
+            previousRank = previousAR;
+            // console.log("chose previousAR:", previousAR);
+            break;
+        case 'lowest-rated':
+            previousRank = previousLAR;
+            // console.log("chose previousLAR:", previousLAR);
+            break;
+        case 'most-rated':
+            previousRank = previousNR;
+            // console.log("chose previousNR:", previousNR);
+            break;
+        default: 
+            previousRank = previousAR;
+    }
+
     let trend = 'neutral'; // up, down, neutral
     let change = 0;
 

@@ -7,7 +7,6 @@ import Leaderboard from './pages/Leaderboard.jsx';
 import Listing from './pages/Listing.jsx';
 import Rate from './pages/Rate.jsx';
 import Home from './pages/Home.jsx';
-import Stats from './pages/Stats.jsx';
 import Toast, { Toaster } from 'react-hot-toast';
 
 
@@ -23,7 +22,6 @@ function App() {
         <Route path="/listing" element={<Listing />} />
         <Route path="/rate" element={<Rate />} />
         <Route path="/about" element={<About />} />
-        <Route path="/otherstats" element={<Stats />} />
       </Routes>
     </Router>
     </>
