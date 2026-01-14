@@ -8,6 +8,7 @@ function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
     const [joinDate, setJoinDate] = useState('');
     const [avgRating, setAvgRating] = useState('N/A');
     const [numComments, setNumComments] = useState(0);
+    const [userComments, setUserComments] = useState([]);
 
     useEffect(() => {
         if (isOpen) {
@@ -29,19 +30,29 @@ function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
                     let totalRating = 0;
                     let ratingCount = 0;
                     let commentCount = 0;
+                    let commentsList = [];
+
                     if (ratings) {
-                        Object.values(ratings).forEach(r => {
+                        Object.entries(ratings).forEach(([foodId, r]) => {
                             if (r.rating > 0) {
                                 totalRating += r.rating;
                                 ratingCount++;
                             }
                             if (r.comment && r.comment.trim().length > 0) {
-                                commentCount++;
+                                commentsList.push({
+                                    foodName: foodId.replace(/-/g, ' '),
+                                    rating: r.rating,
+                                    text: r.comment,
+                                    timestamp: r.time_submitted ? r.time_submitted.seconds * 1000 : Date.now()
+                                });
                             }
                         });
                     }
+
+                    commentsList.sort((a, b) => b.timestamp - a.timestamp);
+                    setUserComments(commentsList);
                     setAvgRating(ratingCount > 0 ? (totalRating / ratingCount).toFixed(2) : 'N/A');
-                    setNumComments(commentCount);
+                    setNumComments(commentsList.length);
                 }
                 setLoading(false);
             };
@@ -70,6 +81,35 @@ function ProfileModal({ isOpen, onClose, userUid, updateTrigger }) {
                                     <p>{numComments}</p>
                                 </div>
                             </div>
+
+                            {userComments.length > 0 && (
+                                <div className="profile-comments-section">
+                                    <h3>Comment History</h3>
+                                    <ul className="profile-comments-list">
+                                        {userComments.map((comment, index) => (
+                                            <li key={index} className="comment-item">
+                                                <div className="comment-header">
+                                                    <div className="comment-user-info">
+                                                        <span className="comment-author">{comment.foodName}</span>
+                                                        <span className="comment-date">
+                                                            {new Date(comment.timestamp).toLocaleDateString("en-US", {
+                                                                year: "numeric",
+                                                                month: "long",
+                                                                day: "numeric",
+                                                            })}
+                                                        </span>
+                                                    </div>
+                                                    <span className="comment-rating">
+                                                        {'⭐'.repeat(comment.rating)}
+                                                    </span>
+
+                                                </div>
+                                                <p className="comment-text">{comment.text}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
