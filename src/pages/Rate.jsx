@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Navbar from '../components/Navbar/Navbar.jsx';
-import SubmitButton from '../Components/SubmitButton/SubmitButton.jsx';
+import SubmitButton from '../components/SubmitButton/SubmitButton.jsx';
 import './style/Rate.css';
 import { doc, getDoc, setDoc, deleteField, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../../firebase.js';
