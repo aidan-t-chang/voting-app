@@ -63,6 +63,7 @@ function Rate() {
             if (auth.currentUser) {
                 const user_ratings = await findFoodRatingsGivenUid(auth.currentUser.uid); 
                 setUserRatings(user_ratings || {});
+            }
 
                 // get the menu items without breakfast, lunch, dinner
                 const allFoodIds = new Set();
@@ -86,7 +87,6 @@ function Rate() {
                 } else {
                     setFoodDetails({});
                 }
-            }
         } catch (e) {
             console.error("error fetching menu: ", e);
         } 
@@ -213,6 +213,15 @@ function Rate() {
                     {items.map(foodId => {
                         const details = foodDetails[foodId];
                         if (!details) return null;
+
+                        if (!auth.currentUser) {
+                            return (
+                                <div key={foodId} className="rate-item-card" style={{ height: 'auto', minHeight: '150px' }}>
+                                    <h3 className="food-name">{details.name}</h3>
+                                    <p className="rated-text placeholder" style={{ marginTop: 'auto', fontSize: '0.9rem' }}>Please log in to rate food items.</p>
+                                </div>
+                            )
+                        }
 
                         const entry = pendingRatings[foodId] !== undefined ? 
                             pendingRatings[foodId] : userRatings[foodId];
