@@ -55,6 +55,8 @@ function Navbar() {
         try {
             await signOut(auth);
             console.log('User signed out successfully');
+            toast("You have been logged out.");
+            window.location.reload();
         } catch (error) {
             console.error('Error signing out: ', error);
         }
