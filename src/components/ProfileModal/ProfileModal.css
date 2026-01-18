@@ -10,6 +10,8 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
+    top: 0;
+    left: 0
 }
 
 .profilemodal.profileopen {
