@@ -72,6 +72,7 @@ function Navbar() {
             try {
                 await addUserToFirestore(auth.currentUser.displayName, auth.currentUser.email, auth.currentUser.uid);
                 console.log('User added to Firestore/signed in successfully');
+                window.location.reload();
             } catch (e) {
                 console.error('Error adding user to Firestore:', e);
             }
