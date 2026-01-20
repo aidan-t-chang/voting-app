@@ -37,9 +37,9 @@
 .comments-list {
     list-style: none;
     padding: 0;
-    background-color: white;
+    background-color: #f9f9f9;
     border-radius: 5px;
-    border: 1px solid black;
+    border: 1px solid #ddd;
     max-height: 130px;
     overflow-y: auto;
     display: flex;
