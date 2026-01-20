@@ -25,7 +25,7 @@ async function addUserToFirestore(username, email, uid) {
             username: username,
             email: email,
             uid: uid,
-            realNameToggled: true,
+            realNameToggled: false,
             hiddenName: generateRandomName(),
             numComments: 0,
             timeJoined: serverTimestamp(),
