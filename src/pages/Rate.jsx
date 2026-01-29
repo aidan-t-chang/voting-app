@@ -16,10 +16,38 @@ function Rate() {
     const [foodDetails, setFoodDetails] = useState({});
     const [pendingRatings, setPendingRatings] = useState({});
 
+    const [badWords, setBadWords] = useState(new Set());
+
+    useEffect(() => {
+        fetch('/en.txt')
+            .then(response => response.text())
+            .then(text => {
+                const words = new Set(text.split('\n').map(word => word.trim().toLowerCase()));
+                setBadWords(words);
+            })
+            .catch(error => {
+                console.error('Error loading bad words list:', error);
+            })
+    }, []);
+
     useEffect(() => {
         fetchMenuItems();
         setPendingRatings({});
     }, [selectedDate]);
+
+    const containsBadWord = (text) => {
+        if (!text) return false;
+
+        const clean = text.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g," ");
+        const words = clean.split(/\s+/);
+
+        for (const word of words) {
+            if (badWords.has(word)) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     const fetchMenuItems = async () => {
         setLoading(true);
@@ -155,6 +183,16 @@ function Rate() {
         console.log("Submitting ratings")
         if (Object.keys(pendingRatings).length === 0) {
             return;
+        }
+
+        for (const foodId of Object.keys(pendingRatings)) {
+            const entry = pendingRatings[foodId];
+            if (entry.comment && containsBadWord(entry.comment)) {
+                const foodName = foodDetails[foodId]?.name || "one of the items";
+                toast.error(`Your comment for "${foodName}" contains inappropriate language. Please modify your comment and try again.`)
+                setLoading(false);
+                return;
+            }
         }
 
         setLoading(true);
