@@ -204,6 +204,9 @@ async def update_ratings():
 
         for user_id, rating_info in data.items():
             rating_val = rating_info.get("rating", 0)
+            # edge case 
+            if rating_val < 0 or rating_val > 5:
+                continue
             comment = rating_info.get("comment", "")
 
             rating_number_count += 1

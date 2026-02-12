@@ -193,6 +193,12 @@ function Rate() {
                 setLoading(false);
                 return;
             }
+
+            if (entry.rating < 0 || entry.rating > 5) {
+                toast.error("An error occurred with one of your ratings. Please try again.");
+                setLoading(false);
+                return;
+            }
         }
 
         setLoading(true);
